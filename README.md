@@ -74,27 +74,10 @@ The high dimensionality of the extracted feature set is reduced before classific
 
 ## Classification
 
-We use a **Support Vector Machine (SVM)** — one of the most widely used classifiers in the seizure-detection literature, and computationally efficient for this feature space.
+We use a **Support Vector Machine (SVM)** — one of the most widely used classifiers in the seizure-detection literature, and computationally efficient for this feature space. It achieved a classification accuracy of 0.96.
 
 ---
 
-## Results
-
-<!-- ===== FILL THIS IN — it's the most important section for an ML portfolio. ===== -->
-<!-- Report your real numbers. Sensitivity matters most clinically (missing a seizure is worse than a false alarm). -->
-
-| Metric | Score |
-|:-------|:-----:|
-| Accuracy | _e.g. 0.94_ |
-| Sensitivity (Recall) | _e.g. 0.91_ |
-| Specificity | _e.g. 0.95_ |
-| F1-score | _e.g. 0.92_ |
-| ROC-AUC | _e.g. 0.97_ |
-
-<!-- A confusion matrix image reads really well here, e.g.: -->
-<!-- ![Confusion Matrix](results/confusion_matrix.png) -->
-
----
 
 ## Installation
 
