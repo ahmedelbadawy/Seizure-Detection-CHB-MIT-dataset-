@@ -107,26 +107,7 @@ python setup.py install
 python main.py
 ```
 
----
 
-## Repository Structure
-
-<!-- ===== EDIT to match your real layout ===== -->
-
-```
-.
-├── data/                # CHB-MIT CSV (not tracked)
-├── src/
-│   ├── preprocessing.py # filtering + filter banks
-│   ├── features.py      # feature extraction
-│   ├── reduction.py     # PCA + feature selection
-│   └── classify.py      # SVM training & evaluation
-├── results/             # figures, metrics
-├── requirements.txt
-└── README.md
-```
-
----
 
 ## Team
 
