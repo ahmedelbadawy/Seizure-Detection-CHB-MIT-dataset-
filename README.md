@@ -1,48 +1,154 @@
-# Seizure-Detection-CHB-MIT-dataset
-in this project we try to build a ML model that can classify seizure occurance in humans using EEG recordings. the dataset used is the CHB-MIT dataset.
+# Seizure Detection — CHB-MIT EEG Dataset
+
+A machine learning pipeline that classifies seizure activity from EEG recordings, distinguishing **ictal** (seizure) from **preictal** (pre-seizure) states. Built on the CHB-MIT Scalp EEG Database.
+
 ---
+
+## Overview
+
+Epileptic seizures produce distinctive patterns in EEG signals. This project builds an end-to-end pipeline — signal filtering, feature extraction, dimensionality reduction, and classification — to automatically detect those patterns. The goal is a model that reliably separates seizure from pre-seizure activity, a task with direct relevance to clinical seizure-warning systems.
+
+**Pipeline at a glance:**
+
+```
+Raw EEG  →  Filtering  →  Filter Banks  →  Feature Extraction
+             →  Standardization  →  PCA + Feature Selection  →  SVM  →  Prediction
+```
+
+---
+
 ## Dataset
-> The CHB-MIT dataset consists of EEG recordings 24 participants, with 23 electrodes. the final column is the outcome column, with 0 indicating preictal, and 1 indicating ictal. 
+
+The [CHB-MIT Scalp EEG Database](https://physionet.org/content/chbmit/) contains EEG recordings from **24 participants** across **23 electrode channels**. In the preprocessed version used here, the final column is the label:
+
+| Label | State | Meaning |
+|:-----:|:------|:--------|
+| `0` | Preictal | Period preceding a seizure |
+| `1` | Ictal | Active seizure |
+
+**Download:** the preprocessed CSV is available [here](https://ieee-dataport.org/open-access/chb-mit-preprocessed-data) (IEEE DataPort). Place it in a `data/` directory before running the pipeline.
+
+> **Note:** the original signed S3 link expires after one hour. Download directly from IEEE DataPort or PhysioNet instead.
+
 ---
-## Preprocessing 
-for preprocessing, the following steps are implemented:
-1. Filtering: as per literature, the functional frequency range for seizure detection is 2-20 Hz. However, most literature suggest using a pandbass filter with corner frequencies of 0.5 Hz and 36 Hz.
-2. Filter Banks: after the initial filter, we may apply filters to study each frequency band of interest on its own, namely, the delta, theta, alpha, beta and gamma bands. 
-3. Standardize features by removing the mean and scaling to unit variance. (these steps will be done after feature extraction)
+
+## Preprocessing
+
+1. **Filtering** — the functional frequency range for seizure detection is 2–20 Hz. Following common practice in the literature, we apply a bandpass filter with corner frequencies of **0.5 Hz and 36 Hz** to remove drift and high-frequency noise while preserving the bands of interest.
+2. **Filter banks** — after the initial filter, we isolate each clinically relevant frequency band for separate analysis:
+
+   | Band | Range (Hz) |
+   |:-----|:----------:|
+   | Delta | 0.5 – 4 |
+   | Theta | 4 – 8 |
+   | Alpha | 8 – 13 |
+   | Beta | 13 – 30 |
+   | Gamma | 30 – 36 |
+
+3. **Standardization** — features are scaled to zero mean and unit variance. *(Applied after feature extraction.)*
+
 ---
+
 ## Feature Extraction
-for this step, we are going to implement some useful features that were used in literature, as well as some features from renown EEG python libraries. some examples:
-1. frequency domain features: power spectral density, peak frequency, median frequency. 
-2. statistical features on time domain signal: mean, variance, skewness and kurtosis.
-3. python packages: pyeeg.
+
+We extract features drawn from the EEG literature and established Python libraries:
+
+- **Frequency-domain:** power spectral density, peak frequency, median frequency.
+- **Time-domain (statistical):** mean, variance, skewness, kurtosis.
+- **Library-based:** features from [PyEEG](https://github.com/forrestbao/pyeeg) (e.g. Hjorth parameters, spectral entropy, fractal dimension).
+
 ---
-## Dimensionality reduction and feature selection
-further assessment of the dimensionality of the extracted features is needed before we conclude a plan for this section of the model. However, we are using Princible component analysis for dimensionality reduction, and combining it with a filter method for selection.
-### candidate filter methods: 
-1- mutual information  
-2- univariate statistical test (such as wilcoxon or t-test) 
+
+## Dimensionality Reduction & Feature Selection
+
+The high dimensionality of the extracted feature set is reduced before classification using:
+
+- **Principal Component Analysis (PCA)** for dimensionality reduction, combined with
+- a **filter-based selection method**. Candidate methods under evaluation:
+  1. Mutual information
+  2. Univariate statistical tests (e.g. Wilcoxon, t-test)
+
+> Final dimensionality is assessed empirically before fixing the selection strategy.
+
 ---
+
 ## Classification
-Support vector machines (SVM) is one of the most widely used classifiers in literature, and is also computationally efficient, hence we choose it for our classification problem.
+
+We use a **Support Vector Machine (SVM)** — one of the most widely used classifiers in the seizure-detection literature, and computationally efficient for this feature space.
+
 ---
 
-## Install dependencies
-```
-$ pip install -r requirements.txt
-```
-#### To install pyeeg
-```
-$ git clone https://github.com/forrestbao/pyeeg.git
-$ cd pyeeg
-$ python setup.py install
-``` 
----
-## Dataset
-The dataset can be downloaded by clicking [Here](https://ieee-dataport.s3.amazonaws.com/open/65970/chbmit_preprocessed_data.csv?response-content-disposition=attachment%3B%20filename%3D%22chbmit_preprocessed_data.csv%22&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJOHYI4KJCE6Q7MIQ%2F20220208%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220208T202215Z&X-Amz-SignedHeaders=Host&X-Amz-Expires=3600&X-Amz-Signature=3a302a134e369844f47e2e2980324db247e0c590717f5f7226d2cd6191ad9771) 
+## Results
+
+<!-- ===== FILL THIS IN — it's the most important section for an ML portfolio. ===== -->
+<!-- Report your real numbers. Sensitivity matters most clinically (missing a seizure is worse than a false alarm). -->
+
+| Metric | Score |
+|:-------|:-----:|
+| Accuracy | _e.g. 0.94_ |
+| Sensitivity (Recall) | _e.g. 0.91_ |
+| Specificity | _e.g. 0.95_ |
+| F1-score | _e.g. 0.92_ |
+| ROC-AUC | _e.g. 0.97_ |
+
+<!-- A confusion matrix image reads really well here, e.g.: -->
+<!-- ![Confusion Matrix](results/confusion_matrix.png) -->
+
 ---
 
+## Installation
 
-# Team
-1. Ammar Al-Saeed Mohammed Section: 2, BN: 1.
-2. Ahmed Sayed Elbadawy Section: 1, BN: 4.
-3. Ramadan Ibrahim Section: 1, BN: 34.
+Install the core dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+PyEEG is installed separately from source:
+
+```bash
+git clone https://github.com/forrestbao/pyeeg.git
+cd pyeeg
+python setup.py install
+```
+
+---
+
+## Usage
+
+<!-- ===== EDIT to match your actual scripts/notebooks ===== -->
+
+```bash
+# 1. Place chbmit_preprocessed_data.csv in data/
+# 2. Run the pipeline
+python main.py
+```
+
+---
+
+## Repository Structure
+
+<!-- ===== EDIT to match your real layout ===== -->
+
+```
+.
+├── data/                # CHB-MIT CSV (not tracked)
+├── src/
+│   ├── preprocessing.py # filtering + filter banks
+│   ├── features.py      # feature extraction
+│   ├── reduction.py     # PCA + feature selection
+│   └── classify.py      # SVM training & evaluation
+├── results/             # figures, metrics
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## Team
+
+| Name | Section | BN |
+|:-----|:-------:|:--:|
+| Ammar Al-Saeed Mohammed | 2 | 1 |
+| Ahmed Sayed Elbadawy | 1 | 4 |
+| Ramadan Ibrahim | 1 | 34 |
